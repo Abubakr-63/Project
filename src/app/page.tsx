@@ -1,12 +1,12 @@
-"use client"
-import { useGetTodoQuery } from "../store/dataApi"
+import React, { Suspense } from 'react'
+import Home from '../components/Products'
 
-export default function Home() {
-  const {data: user} = useGetTodoQuery("");
-  console.log(user)
+export default function page() {
   return (
     <>
-      
+    <Suspense fallback={"loading..."}>
+      <Home/>
+    </Suspense>
     </>
   )
 }

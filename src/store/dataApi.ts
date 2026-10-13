@@ -4,30 +4,35 @@ import { IResponse } from "../types/type";
 
 export const todoAPI = createApi({
     reducerPath : 'todoAPI',
-    baseQuery : fetchBaseQuery({ baseUrl : 'https://to-dos-api.softclub.tj/api/'}),
+    baseQuery : fetchBaseQuery({ baseUrl : '/api/'}),
+    tagTypes : ['ToDo'],
     endpoints : (build) => ({
         getTodo : build.query<IResponse, unknown>({
-            query: () => `to-dos`
+            query: () => `todos`,
+            providesTags : ['ToDo']
         }),
         deleteTodo : build.mutation<IResponse, number>({
             query : (id:number) => ({
-                url : `to-dos?id=${id}`,
+                url : `todos/${id}`,
                 method : 'DELETE'
-            })
+            }),
+            invalidatesTags: ["ToDo"],
         }),
         addTodo : build.mutation<IResponse, unknown>({
             query : (body) => ({
-                url : `to-dos`,
+                url : `todos`,
                 method : 'POST',
                 body
-            })
+            }),
+            invalidatesTags : ['ToDo']
         }),
         editTodo : build.mutation<IResponse, unknown>({
-            query : (body) => ({
-                url : `to-dos`,
-                method : 'PUT',
+            query : ({id, ...body}) => ({
+                url : `todos/${id}`,
+                method : 'PATCH',
                 body
-            }) 
+            }),
+            invalidatesTags: ["ToDo"],
         })
     })
 });
