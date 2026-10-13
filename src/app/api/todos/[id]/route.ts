@@ -1,20 +1,18 @@
-import { deleteUser, updateUser } from "@/src/lib/products";
+import { deleteProduct, updateProduct } from "@/src/lib/products";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request,
-  { params }: { params: Promise<{ id: string }> }) {
-    const {id} = await params;
-    return NextResponse.json({id})
+type Ctx = { params: Promise<{ id: string }> };
+
+export async function DELETE(_: Request, { params }: Ctx) {
+  const { id } = await params;
+  await deleteProduct(Number(id));
+  return NextResponse.json({ success: true });
 }
 
-export async function DELETE(request:Request, {params}) {
-  const {id} = await params;
-  deleteUser(Number(id));
-  return NextResponse.json({success : true})
-}
-
-export async function PATCH(request:Request, {params}) {
-  const {id} = await params;
-  const body = await request.json();
-  updateUser(Number(id), body);
+export async function PATCH(request: Request, { params }: Ctx) {
+  const { id } = await params;
+  const { name, price } = await request.json();
+  const product = await updateProduct(Number(id), name, Number(price));
+  if (!product) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return NextResponse.json(product);
 }
